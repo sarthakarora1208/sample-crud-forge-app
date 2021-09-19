@@ -7,28 +7,11 @@ const API = axios.create({ baseURL: BASE_URL });
 
 const resolver = new Resolver();
 
-// this resolver helps get current context details and from that we extract the current issue key
-/*
- {
-  issue: { key: 'HEC-1', id: '10000', type: 'Story' },
-  project: { id: '10000', key: 'HEC' },
-  isNewToIssue: false,
-  type: 'jira:issuePanel',
-  modal: {}
-}
-*/
-
-resolver.define('getIssueKey', async (req) => {
-  const data = req.context.extension.issue.key;
-  console.log(data);
-  return data;
-});
-
 // this resolver helps get the current issue details by taking in issueKey as payload
 // https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-get
-resolver.define('getIssueDetails', async (req) => {
+resolver.define('getIssue', async (req) => {
   try {
-    const { issueKey } = req.payload;
+    const issueKey = req.context.extension.issue.key;
     const response = await api
       .asApp()
       .requestJira(
@@ -50,10 +33,12 @@ resolver.define('getIssueDetails', async (req) => {
 
 // this resolver helps update summary and description by taking in issue key, updated summary and description as payload
 // https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-put
+
 resolver.define('updateIssue', async (req) => {
   try {
-    const { issueKey, summary, description } = req.payload;
+    const { summary, description } = req.payload;
 
+    const issueKey = req.context.extension.issue.key;
     const response = await api
       .asApp()
       .requestJira(route`/rest/api/2/issue/${issueKey}`, {

@@ -8,15 +8,18 @@ import Button from '@atlaskit/button';
 import TextArea from '@atlaskit/textarea';
 
 function App() {
-  const [issueKey, setIssueKey] = useState(null);
   const [summary, setSummary] = useState(null);
   const [description, setDescription] = useState(null);
   const [context, setContext] = useState({});
 
   useEffect(() => {
-    view.getContext().then(setContext);
     (async () => {
-      await getIssueDetailsUsingInvoke();
+      const context = await view.getContext();
+      setContext(context);
+      const { description, summary } = context.extension.modal;
+      setDescription(description);
+      setSummary(summary);
+
       setTimeout(() => {
         getRandomData();
       }, 3000);
@@ -34,46 +37,24 @@ function App() {
     setDescription(body.replace(/(\r\n|\n|\r)/gm, '. '));
   };
 
-  const getIssueDetailsUsingInvoke = async () => {
-    // to call get Issue Key resolver
-    const key = await invoke('getIssueKey');
-    setIssueKey(key);
+  // const getIssueDetails = async (currentIssueKey) => {
+  //   const issueResponse = await requestJira(
+  //     `/rest/api/3/issue/${currentIssueKey}?fields=summary,description`
+  //   );
 
-    // Can be done using resolvers
-    // TO get the issue details, i.e. summary and description
-    const data = await invoke('getIssueDetails', { issueKey: key });
-    //alert(JSON.stringify(data.fields.description, null, 4));
-    const { summary: issueSummary, description: issueDescription } =
-      data.fields;
+  //   await checkResponse('Jira API', issueResponse);
+  //   const data = issueResponse.body;
 
-    // checking if summary exists and setting it
-    setSummary(issueSummary ? issueSummary : null);
-    // checking if description exists and setting it
-    setDescription(
-      issueDescription && issueDescription.content[0].content[0].text
-        ? issueDescription.content[0].content[0].text
-        : null
-    );
-  };
+  //   const { summary, description } = data.fields;
 
-  const getIssueDetails = async (currentIssueKey) => {
-    const issueResponse = await requestJira(
-      `/rest/api/3/issue/${currentIssueKey}?fields=summary,description`
-    );
+  //   setSummary(summary ? summary : null);
 
-    await checkResponse('Jira API', issueResponse);
-    const data = issueResponse.body;
-
-    const { summary, description } = data.fields;
-
-    setSummary(summary ? summary : null);
-
-    setDescription(
-      description.content[0].content[0].text
-        ? description.content[0].content[0].text
-        : null
-    );
-  };
+  //   setDescription(
+  //     description.content[0].content[0].text
+  //       ? description.content[0].content[0].text
+  //       : null
+  //   );
+  // };
 
   return (
     <div
@@ -92,7 +73,7 @@ function App() {
           width: '100%',
         }}
       >
-        {issueKey === null || summary === null || description === null ? (
+        {summary === null || description === null ? (
           <Spinner size="large" />
         ) : (
           <div
@@ -154,7 +135,7 @@ function App() {
 
           <Button
             onClick={async () => {
-              await invoke('updateIssue', { description, summary, issueKey });
+              await invoke('updateIssue', { description, summary });
               view.close();
             }}
             appearance="primary"

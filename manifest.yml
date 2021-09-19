@@ -1,7 +1,7 @@
 modules:
   jira:issuePanel:
     - key: sample-crud-forge-app
-      resource: main
+      resource: wrapper-app
       resolver:
         function: resolver
       viewportSize: medium
@@ -11,7 +11,7 @@ modules:
     - key: resolver
       handler: index.handler
 resources:
-  - key: main
+  - key: wrapper-app
     path: static/wrapper-app/build
     tunnel:
       port: 3000
