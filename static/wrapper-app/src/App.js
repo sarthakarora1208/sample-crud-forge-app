@@ -9,7 +9,7 @@ function App() {
       onClose: (payload) => {
         console.log('onClose called with', payload);
       },
-      size: 'xlarge',
+      size: 'medium',
     });
     modal.open();
   };

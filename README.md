@@ -16,19 +16,21 @@ To get started, clone the repository and run the following command in your termi
 	npm run setup
 ```
 
+The setup command installs the dependencies for both the react works.
+
 To register the app with forge.
 
 ```
 	forge register
 ```
 
-To deploy the app. ()
+To deploy the app to forge's servers
 
 ```
 	forge deploy
 ```
 
-To install the app to your domain
+To install the app to your domain. You'll have to setup https://developer.atlassian.com/platform/forge/getting-started/#set-up-an-atlassian-cloud-developer-site
 
 ```
      forge install

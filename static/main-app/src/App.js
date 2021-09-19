@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { invoke, requestJira } from "@forge/bridge";
-import Textfield from "@atlaskit/textfield";
-import Layout from "./components/Layout";
-import Spinner from "@atlaskit/spinner";
-import { checkResponse } from "./utils/checkResponse";
-import Form, { Field, FormFooter, HelperMessage } from "@atlaskit/form";
+import React, { useEffect, useState } from 'react';
+import { invoke, requestJira } from '@forge/bridge';
+import Textfield from '@atlaskit/textfield';
+import Layout from './components/Layout';
+import Spinner from '@atlaskit/spinner';
+import { checkResponse } from './utils/checkResponse';
+import Form, { Field, FormFooter, HelperMessage } from '@atlaskit/form';
 
 function App() {
   const [issueKey, setIssueKey] = useState(null);
@@ -14,12 +14,12 @@ function App() {
   useEffect(() => {
     (async () => {
       // to call get Issue Key resolver
-      const key = await invoke("getIssueKey");
+      const key = await invoke('getIssueKey');
       setIssueKey(key);
 
       // Can be done using resolvers
       // TO get the issue details, i.e. summary and description
-      const data = await invoke("getIssueDetails", { issueKey: key });
+      const data = await invoke('getIssueDetails', { issueKey: key });
       const { summary: issueSummary, description: issueDescription } =
         data.fields;
 
@@ -41,7 +41,7 @@ function App() {
       `/rest/api/3/issue/${currentIssueKey}?fields=summary,description`
     );
 
-    await checkResponse("Jira API", issueResponse);
+    await checkResponse('Jira API', issueResponse);
     const data = issueResponse.body;
 
     const { summary, description } = data.fields;
@@ -59,10 +59,10 @@ function App() {
     <Layout issueKey={issueKey} summary={summary} description={description}>
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
         }}
       >
         {issueKey === null || summary === null || description === null ? (
@@ -70,14 +70,14 @@ function App() {
         ) : (
           <div
             style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
             }}
           >
-            <div style={{ marginTop: "2rem", width: "30%" }}>
+            <div style={{ marginTop: '2rem', width: '100%' }}>
               <Field label="Summary" name="summary">
                 {({ fieldProps }) => (
                   <Textfield
@@ -92,7 +92,7 @@ function App() {
               </Field>
             </div>
             <div
-              style={{ marginTop: "1rem", width: "30%", marginBottom: "2rem" }}
+              style={{ marginTop: '1rem', width: '100%', marginBottom: '2rem' }}
             >
               <Field label="Description" name="description">
                 {({ fieldProps }) => (
