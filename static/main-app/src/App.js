@@ -1,40 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import { invoke, requestJira } from '@forge/bridge';
+import { view, invoke, requestJira } from '@forge/bridge';
 import Textfield from '@atlaskit/textfield';
-import Layout from './components/Layout';
 import Spinner from '@atlaskit/spinner';
 import { checkResponse } from './utils/checkResponse';
 import Form, { Field, FormFooter, HelperMessage } from '@atlaskit/form';
+import Button from '@atlaskit/button';
+import TextArea from '@atlaskit/textarea';
 
 function App() {
   const [issueKey, setIssueKey] = useState(null);
   const [summary, setSummary] = useState(null);
   const [description, setDescription] = useState(null);
+  const [context, setContext] = useState({});
 
   useEffect(() => {
+    view.getContext().then(setContext);
     (async () => {
-      // to call get Issue Key resolver
-      const key = await invoke('getIssueKey');
-      setIssueKey(key);
-
-      // Can be done using resolvers
-      // TO get the issue details, i.e. summary and description
-      const data = await invoke('getIssueDetails', { issueKey: key });
-      const { summary: issueSummary, description: issueDescription } =
-        data.fields;
-
-      // checking if summary exists and setting it
-      setSummary(issueSummary ? issueSummary : null);
-      // checking if description exists and setting it
-      setDescription(
-        issueDescription && issueDescription.content[0].content[0].text
-          ? issueDescription.content[0].content[0].text
-          : null
-      );
-      // can also be done using requestJira from forge/bridge
-      // await getIssueDetails(key);
+      await getIssueDetailsUsingInvoke();
+      setTimeout(() => {
+        getRandomData();
+      }, 3000);
     })();
   }, []);
+
+  const getRandomData = async () => {
+    const { title, body } = await invoke('getPostData', {
+      postId: Math.floor(Math.random() * 4 + 1),
+    });
+    setSummary(title);
+    setDescription(body.replace(/(\r\n|\n|\r)/gm, '. '));
+  };
+  const getIssueDetailsUsingInvoke = async () => {
+    // to call get Issue Key resolver
+    const key = await invoke('getIssueKey');
+    setIssueKey(key);
+
+    // Can be done using resolvers
+    // TO get the issue details, i.e. summary and description
+    const data = await invoke('getIssueDetails', { issueKey: key });
+    //alert(JSON.stringify(data.fields.description, null, 4));
+    const { summary: issueSummary, description: issueDescription } =
+      data.fields;
+
+    // checking if summary exists and setting it
+    setSummary(issueSummary ? issueSummary : null);
+    // checking if description exists and setting it
+    setDescription(
+      issueDescription && issueDescription.content[0].content[0].text
+        ? issueDescription.content[0].content[0].text
+        : null
+    );
+  };
 
   const getIssueDetails = async (currentIssueKey) => {
     const issueResponse = await requestJira(
@@ -56,7 +72,14 @@ function App() {
   };
 
   return (
-    <Layout issueKey={issueKey} summary={summary} description={description}>
+    <div
+      style={{
+        padding: '2rem',
+        flex: 1,
+        position: 'relative',
+      }}
+    >
+      <span className="modal-header">{'Sample App'}</span>
       <div
         style={{
           display: 'flex',
@@ -96,13 +119,14 @@ function App() {
             >
               <Field label="Description" name="description">
                 {({ fieldProps }) => (
-                  <Textfield
+                  <TextArea
                     placeholder="Description"
                     name="description"
                     value={description}
                     onChange={(e) => {
                       setDescription(e.target.value);
                     }}
+                    minimumRows={10}
                   />
                 )}
               </Field>
@@ -110,7 +134,34 @@ function App() {
           </div>
         )}
       </div>
-    </Layout>
+      <div
+        style={{
+          float: 'right',
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          margin: '1rem 1rem',
+        }}
+      >
+        <div>
+          <Button onClick={() => view.close()} appearance="subtle">
+            Cancel
+          </Button>
+
+          <Button
+            onClick={async () => {
+              await invoke('updateIssue', { description, summary, issueKey });
+              view.close();
+            }}
+            appearance="primary"
+            autoFocus
+            // isDisabled={isAnnotating && isDisabled}
+          >
+            Update
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -7,7 +7,8 @@ function App() {
     const modal = new Modal({
       resource: 'modaldialog',
       onClose: (payload) => {
-        console.log('onClose called with', payload);
+        //console.log('onClose called with', payload);
+        window.location.reload();
       },
       size: 'medium',
     });

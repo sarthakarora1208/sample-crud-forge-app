@@ -1,6 +1,9 @@
-import Resolver from "@forge/resolver";
-import api, { requestJira, route } from "@forge/api";
-import axios from "axios";
+import Resolver from '@forge/resolver';
+import axios from 'axios';
+import api, { requestJira, route } from '@forge/api';
+
+export const BASE_URL = `https://jsonplaceholder.typicode.com/`;
+const API = axios.create({ baseURL: BASE_URL });
 
 const resolver = new Resolver();
 
@@ -15,7 +18,7 @@ const resolver = new Resolver();
 }
 */
 
-resolver.define("getIssueKey", async (req) => {
+resolver.define('getIssueKey', async (req) => {
   const data = req.context.extension.issue.key;
   console.log(data);
   return data;
@@ -23,7 +26,7 @@ resolver.define("getIssueKey", async (req) => {
 
 // this resolver helps get the current issue details by taking in issueKey as payload
 // https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-get
-resolver.define("getIssueDetails", async (req) => {
+resolver.define('getIssueDetails', async (req) => {
   try {
     const { issueKey } = req.payload;
     const response = await api
@@ -32,7 +35,7 @@ resolver.define("getIssueDetails", async (req) => {
         route`/rest/api/3/issue/${issueKey}?fields=summary,description`,
         {
           headers: {
-            Accept: "application/json",
+            Accept: 'application/json',
           },
         }
       );
@@ -47,17 +50,17 @@ resolver.define("getIssueDetails", async (req) => {
 
 // this resolver helps update summary and description by taking in issue key, updated summary and description as payload
 // https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-put
-resolver.define("updateIssue", async (req) => {
+resolver.define('updateIssue', async (req) => {
   try {
     const { issueKey, summary, description } = req.payload;
 
     const response = await api
       .asApp()
       .requestJira(route`/rest/api/2/issue/${issueKey}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           fields: {
@@ -69,6 +72,16 @@ resolver.define("updateIssue", async (req) => {
     console.log(response.status);
   } catch (err) {
     console.log(err);
+  }
+});
+
+resolver.define('getPostData', async (req) => {
+  const { postId } = req.payload;
+  try {
+    const res = await API.get(`/posts/${postId}`);
+    return res.data;
+  } catch (err) {
+    throw err;
   }
 });
 
