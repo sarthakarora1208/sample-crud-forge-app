@@ -1,0 +1,15 @@
+.modal-header {
+  font-size: 20px;
+  font-style: inherit;
+  font-weight: 600;
+  letter-spacing: -0.008em;
+  line-height: 1;
+
+  min-width: 0px;
+  flex: 1 1 auto;
+  overflow-wrap: break-word;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-weight: 400;
+  color: rgb(23, 43, 77);
+}
