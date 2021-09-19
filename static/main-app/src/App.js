@@ -23,13 +23,17 @@ function App() {
     })();
   }, []);
 
+  // getRandomData from api
   const getRandomData = async () => {
     const { title, body } = await invoke('getPostData', {
       postId: Math.floor(Math.random() * 4 + 1),
     });
+    // replace the title
     setSummary(title);
+    // replace the description
     setDescription(body.replace(/(\r\n|\n|\r)/gm, '. '));
   };
+
   const getIssueDetailsUsingInvoke = async () => {
     // to call get Issue Key resolver
     const key = await invoke('getIssueKey');
