@@ -20,7 +20,7 @@ resources:
     tunnel:
       port: 3001
 app:
-  id: ari:cloud:ecosystem::app/18bdff15-a942-47c5-8c14-51a67f5f6d02
+  id: ari:cloud:ecosystem::app/df737d11-ce19-4c72-b5ed-fa31e3009017
 
 permissions:
   scopes:

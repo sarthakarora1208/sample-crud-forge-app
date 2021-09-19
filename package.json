@@ -4,6 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "install-main": "cd static/main-app && npm install && npm run build",
+    "install-wrapper": "cd static/wrapper-app && npm install && npm run build",
+    "setup": "npm install && npm run install-main && npm run install-wrapper"
+  },
   "devDependencies": {
     "eslint": "^6.5.1",
     "eslint-plugin-react-hooks": "^2.1.2"

@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { invoke } from '@forge/bridge';
+import React from 'react';
+import { Modal } from '@forge/bridge';
+import Button from '@atlaskit/button/standard-button';
 
 function App() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    invoke('getText', { example: 'my-invoke-variable' }).then(setData);
-  }, []);
+  const openModal = () => {
+    const modal = new Modal({
+      resource: 'modaldialog',
+      onClose: (payload) => {
+        console.log('onClose called with', payload);
+      },
+      size: 'xlarge',
+    });
+    modal.open();
+  };
 
   return (
-    <div>
-      {data ? data : 'Loading...'}
-    </div>
+    <>
+      <Button appearance="primary" onClick={openModal}>
+        Open Sample App!
+      </Button>
+    </>
   );
 }
 
