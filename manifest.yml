@@ -1,0 +1,42 @@
+modules:
+  jira:issuePanel:
+    - key: sample-crud-forge-app
+      resource: main
+      resolver:
+        function: resolver
+      viewportSize: medium
+      title: Sample App!
+      icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: static/wrapper-app/build
+    tunnel:
+      port: 3000
+  - key: modaldialog
+    path: static/main-app/build
+    tunnel:
+      port: 3001
+app:
+  id: ari:cloud:ecosystem::app/18bdff15-a942-47c5-8c14-51a67f5f6d02
+
+permissions:
+  scopes:
+    - read:jira-work
+    - write:jira-work
+  content:
+    styles:
+      - 'unsafe-inline'
+    scripts:
+      - 'unsafe-inline'
+      - 'unsafe-hashes'
+  external:
+    images:
+      - '*'
+    fetch:
+      client:
+        - '*'
+      backend:
+        - '*'
