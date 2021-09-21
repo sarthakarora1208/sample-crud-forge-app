@@ -29,7 +29,7 @@ function App() {
 
   const openModal = () => {
     const modal = new Modal({
-      resource: 'modaldialog',
+      resource: 'main-app',
       onClose: (payload) => {},
       size: 'medium',
       context: {

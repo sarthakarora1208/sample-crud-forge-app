@@ -7,15 +7,16 @@ const API = axios.create({ baseURL: BASE_URL });
 
 const resolver = new Resolver();
 
-// this resolver helps get the current issue details by taking in issueKey as payload
+// this resolver helps get the current issue details
 // https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-get
+
 resolver.define('getIssue', async (req) => {
   try {
-    const issueKey = req.context.extension.issue.key;
+    const issueId = req.context.extension.issue.key;
     const response = await api
       .asApp()
       .requestJira(
-        route`/rest/api/3/issue/${issueKey}?fields=summary,description`,
+        route`/rest/api/3/issue/${issueId}?fields=summary,description`,
         {
           headers: {
             Accept: 'application/json',
@@ -31,17 +32,17 @@ resolver.define('getIssue', async (req) => {
   }
 });
 
-// this resolver helps update summary and description by taking in issue key, updated summary and description as payload
+// this resolver helps update summary and description by taking in updated summary and description as payload
 // https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-put
 
 resolver.define('updateIssue', async (req) => {
   try {
     const { summary, description } = req.payload;
 
-    const issueKey = req.context.extension.issue.key;
+    const issueId = req.context.extension.issue.key;
     const response = await api
       .asApp()
-      .requestJira(route`/rest/api/2/issue/${issueKey}`, {
+      .requestJira(route`/rest/api/2/issue/${issueId}`, {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
